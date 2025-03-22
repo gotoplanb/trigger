@@ -18,12 +18,15 @@ setup:
 
 # Format code
 format: setup
-	$(PYTHON) -m black .
-	$(PYTHON) -m isort .
+	$(PYTHON) -m black app tests setup.py
+	$(PYTHON) -m isort app tests setup.py
 
 # Run linting
 lint: setup
-	$(PYTHON) -m pylint $$(git ls-files '*.py')
+	$(PYTHON) -m flake8 app tests setup.py
+
+# Format and lint code
+check: format lint
 
 # Run tests
 test: setup

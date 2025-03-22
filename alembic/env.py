@@ -1,7 +1,6 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 
@@ -15,10 +14,12 @@ config = context.config
 
 # Check if we're running in test mode
 import os
+
 TESTING = os.environ.get("TESTING", "").lower() == "true"
 
 # Override sqlalchemy.url from environment variable
 from app.core.config import settings
+
 sqlalchemy_url = settings.DATABASE_URL
 if sqlalchemy_url.startswith("postgres://"):
     sqlalchemy_url = sqlalchemy_url.replace("postgres://", "postgresql://", 1)
@@ -77,9 +78,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

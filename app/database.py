@@ -6,9 +6,10 @@ This module handles database connection and session management.
 
 import logging
 import os
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import sessionmaker
 
 from app.core.config import settings
 from app.models.base import Base
@@ -31,7 +32,14 @@ try:
             DB_URL = DB_URL.replace("postgres://", "postgresql://", 1)
 
         logger.info("Connecting to PostgreSQL database")
-        engine = create_engine(DB_URL, pool_size=5, max_overflow=10)
+        engine = create_engine(
+            DB_URL,
+            pool_size=10,  # Increased pool size
+            max_overflow=20,  # Increased max overflow
+            pool_timeout=30,  # Connection timeout in seconds
+            pool_recycle=1800,  # Recycle connections after 30 minutes
+            pool_pre_ping=True,  # Check connection validity before using
+        )
 
     # Create SessionLocal class
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

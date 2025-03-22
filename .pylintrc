@@ -1,0 +1,40 @@
+[MASTER]
+# Python version
+py-version = 3.9
+
+# Add files or directories to the blacklist. 
+ignore=trigger,alembic/versions
+
+# Add files or directories matching the regex patterns to the blacklist.
+ignore-patterns=.*_pb2.py,.*_pb2_grpc.py,test_.*.py
+
+[MESSAGES CONTROL]
+# Only show warnings with the listed confidence levels.
+disable=
+    C0111, # missing-docstring
+    C0103, # invalid-name
+    C0330, # bad-continuation
+    C0326, # bad-whitespace
+    W0511, # fixme
+    R0903, # too-few-public-methods
+    R0913, # too-many-arguments
+    R0914, # too-many-locals
+    E1101, # no-member (SQLAlchemy false positives)
+
+[FORMAT]
+# Maximum number of characters on a single line.
+max-line-length=120
+
+[DESIGN]
+# Maximum number of arguments for function / method.
+max-args=8
+
+# Maximum number of instance attributes for a class.
+max-attributes=12
+
+[SIMILARITIES]
+# Minimum lines number of a similarity.
+min-similarity-lines=8
+
+# Ignore imports when computing similarities.
+ignore-imports=yes

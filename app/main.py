@@ -10,10 +10,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.config import settings
 from app.api.v1.api import api_router
-from app.events.processor import EventProcessor
 from app.cdc.listener import CDCListener
+from app.core.config import settings
+from app.events.processor import EventProcessor
 
 # Configure logging
 logging.basicConfig(
@@ -35,21 +35,25 @@ cdc_listener = CDCListener(event_processor)
 async def lifespan(app: FastAPI):
     """
     Application lifespan handler.
-    
+
     This function handles startup and shutdown events for the application.
     """
-    # Startup
-    logger.info("Starting CDC listener")
-    cdc_listener.start()
-    
+    import os
+
+    # Startup - but only if not in testing mode
+    if os.environ.get("TESTING") != "true":
+        logger.info("Starting CDC listener")
+        cdc_listener.start()
+
     yield
-    
-    # Shutdown
-    logger.info("Stopping CDC listener")
-    cdc_listener.stop()
-    
-    # Close HTTP client for event processor
-    await event_processor.close()
+
+    # Shutdown - but only if not in testing mode
+    if os.environ.get("TESTING") != "true":
+        logger.info("Stopping CDC listener")
+        cdc_listener.stop()
+
+        # Close HTTP client for event processor
+        await event_processor.close()
 
 
 # Initialize FastAPI app
@@ -76,7 +80,7 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 async def root():
     """
     Root endpoint.
-    
+
     Returns:
         Welcome message
     """

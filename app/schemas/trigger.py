@@ -5,7 +5,7 @@ This module defines Pydantic schemas for API request and response validation.
 """
 
 from datetime import datetime
-from typing import Dict, List, Optional, Union, Any
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -16,6 +16,7 @@ class TriggerBase(BaseModel):
     """
     Base trigger schema with common attributes.
     """
+
     name: str
     entity_type: EntityType
     change_types: List[ChangeType]
@@ -28,6 +29,7 @@ class TriggerCreate(TriggerBase):
     """
     Schema for creating a new trigger.
     """
+
     pass
 
 
@@ -35,6 +37,7 @@ class TriggerUpdate(BaseModel):
     """
     Schema for updating an existing trigger.
     """
+
     name: Optional[str] = None
     entity_type: Optional[EntityType] = None
     change_types: Optional[List[ChangeType]] = None
@@ -47,6 +50,7 @@ class TriggerInDB(TriggerBase):
     """
     Schema for a trigger as stored in the database.
     """
+
     id: int
     created_at: datetime
     updated_at: datetime
@@ -59,6 +63,7 @@ class TriggerEventBase(BaseModel):
     """
     Base trigger event schema with common attributes.
     """
+
     entity_id: int
     change_type: ChangeType
     old_data: Optional[Dict[str, Any]] = None
@@ -69,6 +74,7 @@ class TriggerEventCreate(TriggerEventBase):
     """
     Schema for creating a new trigger event.
     """
+
     trigger_id: int
 
 
@@ -76,6 +82,7 @@ class TriggerEventUpdate(BaseModel):
     """
     Schema for updating an existing trigger event.
     """
+
     processed: Optional[bool] = None
     response_status: Optional[int] = None
     processed_at: Optional[datetime] = None
@@ -85,6 +92,7 @@ class TriggerEventInDB(TriggerEventBase):
     """
     Schema for a trigger event as stored in the database.
     """
+
     id: int
     trigger_id: int
     processed: bool
@@ -100,6 +108,7 @@ class DatabaseChangeNotification(BaseModel):
     """
     Schema for sending database change notifications to external services.
     """
+
     trigger_name: str
     entity_type: EntityType
     entity_id: int

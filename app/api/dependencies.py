@@ -14,7 +14,7 @@ from app.database import SessionLocal
 def get_db() -> Generator[Session, None, None]:
     """
     Get a database session.
-    
+
     Yields:
         A SQLAlchemy database session
     """

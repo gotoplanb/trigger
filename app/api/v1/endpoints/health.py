@@ -4,9 +4,7 @@ Health check endpoint for the API.
 This module provides a simple health check endpoint.
 """
 
-from typing import Dict
-
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -16,6 +14,7 @@ class HealthResponse(BaseModel):
     """
     Health check response model.
     """
+
     status: str
     version: str = "0.1.0"
 
@@ -24,7 +23,7 @@ class HealthResponse(BaseModel):
 async def health_check():
     """
     Perform a health check.
-    
+
     Returns:
         Health check status
     """

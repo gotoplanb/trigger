@@ -4,7 +4,9 @@ Configuration settings module.
 This module manages application-wide configuration settings using Pydantic.
 """
 
-from pydantic import ConfigDict
+import os
+
+from pydantic import ConfigDict, Field
 from pydantic_settings import BaseSettings
 
 
@@ -22,8 +24,15 @@ class Settings(BaseSettings):
         NOTIFICATION_ENDPOINT: API endpoint to call on change events
     """
 
-    DATABASE_URL: str
-    MONITORS_DATABASE_URL: str
+    # Required configuration with defaults for testing
+    DATABASE_URL: str = Field(
+        default="sqlite:///:memory:" if os.environ.get("TESTING") == "true" else None
+    )
+    MONITORS_DATABASE_URL: str = Field(
+        default="sqlite:///:memory:" if os.environ.get("TESTING") == "true" else None
+    )
+
+    # Optional configuration with defaults
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "Triggers API"
     REPLICATION_SLOT: str = "triggers_slot"

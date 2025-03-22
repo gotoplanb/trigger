@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="trigger",
@@ -12,6 +12,7 @@ setup(
         "sqlalchemy>=2.0.0",
         "psycopg2-binary>=2.9.9",
         "alembic>=1.13.0",
+        "psycopg>=3.2.0",
         "psycopg-pool>=3.2.0",
         "httpx>=0.24.0",
         "python-dotenv>=1.0.0",

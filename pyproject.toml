@@ -9,14 +9,17 @@ exclude = '''
 /(  
     .git
   | .venv
+  | trigger
   | build
   | dist
+  | alembic/versions
 )/
 '''
 
 [tool.isort]
 profile = "black"
 line_length = 88
+skip = ["trigger", "alembic/versions"]
 
 [tool.pylint.messages_control]
 disable = [

@@ -4,19 +4,32 @@ Database models for the triggers system.
 This module defines SQLAlchemy ORM models for triggers and related entities.
 """
 
-from datetime import UTC, datetime
 import enum
+import os
+from datetime import UTC, datetime
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Enum, Table, JSON, Boolean
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+)
 from sqlalchemy.orm import relationship
 
-from app.models.base import Base
+from app.models.base import Base, JSONType
+
+# Use custom JSON type for SQLite compatibility in tests
+JSON_COLUMN_TYPE = JSONType if os.environ.get("TESTING") == "true" else JSON
 
 
 class ChangeType(str, enum.Enum):
     """
     Type of database change event.
-    
+
     Attributes:
         INSERT: New record added
         UPDATE: Existing record modified
@@ -31,7 +44,7 @@ class ChangeType(str, enum.Enum):
 class EntityType(str, enum.Enum):
     """
     Type of database entity being monitored.
-    
+
     Attributes:
         MONITOR: Monitor entity
         MONITOR_STATUS: MonitorStatus entity
@@ -65,20 +78,24 @@ class Trigger(Base):  # pylint: disable=too-few-public-methods
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
     entity_type = Column(Enum(EntityType), nullable=False)
-    change_types = Column(JSON, nullable=False)  # JSON array of ChangeType values
-    filter_condition = Column(JSON, nullable=True)  # Optional JSON condition 
+    change_types = Column(
+        JSON_COLUMN_TYPE, nullable=False
+    )  # JSON array of ChangeType values
+    filter_condition = Column(
+        JSON_COLUMN_TYPE, nullable=True
+    )  # Optional JSON condition
     endpoint = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     created_at = Column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
     )
     updated_at = Column(
-        DateTime(timezone=True), 
-        default=lambda: datetime.now(UTC), 
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
         onupdate=lambda: datetime.now(UTC),
-        nullable=False
+        nullable=False,
     )
-    
+
     events = relationship("TriggerEvent", back_populates="trigger")
 
 
@@ -106,13 +123,13 @@ class TriggerEvent(Base):  # pylint: disable=too-few-public-methods
     trigger_id = Column(Integer, ForeignKey("triggers.id"))
     entity_id = Column(Integer, nullable=False)
     change_type = Column(Enum(ChangeType), nullable=False)
-    old_data = Column(JSON, nullable=True)
-    new_data = Column(JSON, nullable=True)
+    old_data = Column(JSON_COLUMN_TYPE, nullable=True)
+    new_data = Column(JSON_COLUMN_TYPE, nullable=True)
     processed = Column(Boolean, default=False)
     response_status = Column(Integer, nullable=True)
     created_at = Column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
     )
     processed_at = Column(DateTime(timezone=True), nullable=True)
-    
+
     trigger = relationship("Trigger", back_populates="events")
