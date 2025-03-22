@@ -10,8 +10,8 @@ psycopg2-binary>=2.9.9
 alembic>=1.13.0
 
 # CDC specific
-psycopg2-pq>=0.12.0
-psycopg2-pool>=1.1
+psycopg-pool>=3.2.0
+httpx>=0.24.0
 
 # Utilities
 python-dotenv>=1.0.0
